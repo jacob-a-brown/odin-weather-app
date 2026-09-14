@@ -1,7 +1,13 @@
 import { getWeather } from "./visual-crossing-access.js";
+import { toF, toC } from "./helpers.js";
 
 const form = document.querySelector("form");
 const weatherContent = document.querySelector(".weather-content");
+
+let currentDegreeUnit;
+let maxTemps = [];
+let minTemps = [];
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const latitude = document.querySelector("#latitude");
@@ -10,16 +16,22 @@ form.addEventListener("submit", async (e) => {
   console.log(weatherData);
 
   weatherContent.replaceChildren();
+  maxTemps = [];
+  minTemps = [];
 
   weatherData.days.forEach(function(item){
     const dailyContent = document.createElement("div");
     dailyContent.className = "daily-content";
 
     const tempMaxDisplay = document.createElement("p");
-    tempMaxDisplay.textContent = `Temp Max: ${item.tempmax}`;
+    tempMaxDisplay.className = "max-temp";
+    tempMaxDisplay.textContent = `Temp Max: ${item.tempmax} F`;
+    maxTemps.push(item.tempmax);
 
     const tempMinDisplay = document.createElement("p");
-    tempMinDisplay.textContent = `Temp Min: ${item.tempmin}`;
+    tempMinDisplay.className = "min-temp";
+    tempMinDisplay.textContent = `Temp Min: ${item.tempmin} F`;
+    minTemps.push(item.tempmin);
 
     const precipProbDisplay = document.createElement("p");
     precipProbDisplay.textContent = `Precip Chance: ${item.precipprob}%`;
@@ -32,5 +44,40 @@ form.addEventListener("submit", async (e) => {
     dailyContent.appendChild(precipProbDisplay);
     dailyContent.appendChild(precipTypeDisplay);
     weatherContent.appendChild(dailyContent);
+  });
+});
+
+const degreeUnits = document.querySelectorAll(".degree-unit");
+degreeUnits.forEach((item) => {
+  item.addEventListener("change", (e) => {
+    let unit;
+    let fn;
+
+    if(e.target.id === "fahrenheit"){
+      unit = "F";
+      fn = toF;
+    } else {
+      unit = "C";
+      fn = toC;
+    }
+
+    const convertedMaxTemps = maxTemps.map(fn);
+    const convertedMinTemps = minTemps.map(fn);
+
+    maxTemps = convertedMaxTemps;
+    minTemps = convertedMinTemps;
+
+
+    const tempMinDisplays = document.querySelectorAll(".min-temp");
+    for(let i = 0; i < tempMinDisplays.length; i++){
+      const tempMinDisplay = tempMinDisplays[i];
+      tempMinDisplay.textContent = `Temp Min: ${convertedMinTemps[i].toFixed(2)} ${unit}`
+    }
+
+    const tempMaxDisplays = document.querySelectorAll(".max-temp");
+    for(let i = 0; i < tempMaxDisplays.length; i++){
+      const tempMaxDisplay = tempMaxDisplays[i];
+      tempMaxDisplay.textContent = `Temp Min: ${convertedMaxTemps[i].toFixed(2)} ${unit}`
+    }
   });
 });
