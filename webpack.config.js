@@ -1,5 +1,6 @@
 import path from "node:path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import Dotenv from "dotenv-webpack";
 
 export default {
   mode: "development",
@@ -18,6 +19,7 @@ export default {
       template: "./src/template.html",
       scriptLoading: "defer",
     }),
+    new Dotenv(),
   ],
   module: {
     rules: [
