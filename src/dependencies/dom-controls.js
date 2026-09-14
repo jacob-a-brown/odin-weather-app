@@ -4,7 +4,6 @@ import { toF, toC } from "./helpers.js";
 const form = document.querySelector("form");
 const weatherContent = document.querySelector(".weather-content");
 
-let currentDegreeUnit;
 let maxTemps = [];
 let minTemps = [];
 
@@ -19,22 +18,35 @@ form.addEventListener("submit", async (e) => {
   maxTemps = [];
   minTemps = [];
 
+  const degreeUnit = document.querySelector(".degree-unit:checked");
+  console.log(degreeUnit.value);
+
   weatherData.days.forEach(function(item){
     const dailyContent = document.createElement("div");
     dailyContent.className = "daily-content";
 
     const tempMaxDisplay = document.createElement("p");
     tempMaxDisplay.className = "max-temp";
-    tempMaxDisplay.textContent = `Temp Max: ${item.tempmax} F`;
-    maxTemps.push(item.tempmax);
-
     const tempMinDisplay = document.createElement("p");
     tempMinDisplay.className = "min-temp";
-    tempMinDisplay.textContent = `Temp Min: ${item.tempmin} F`;
-    minTemps.push(item.tempmin);
+
+    if (degreeUnit.value === "fahrenheit"){
+      tempMaxDisplay.textContent = `Temp Max: ${item.tempmax} F`;
+      maxTemps.push(item.tempmax);
+
+      tempMinDisplay.textContent = `Temp Min: ${item.tempmin} F`;
+      minTemps.push(item.tempmin);
+    } else {
+      tempMaxDisplay.textContent = `Temp Max: ${toC(item.tempmax).toFixed(2)} C`;
+      maxTemps.push(toC(item.tempmax));
+
+      tempMinDisplay.textContent = `Temp Min: ${toC(item.tempmin).toFixed(2)} C`;
+      minTemps.push(toC(item.tempmin));
+    }
 
     const precipProbDisplay = document.createElement("p");
-    precipProbDisplay.textContent = `Precip Chance: ${item.precipprob}%`;
+    const precipProb = item.precipprob ?? 0;
+    precipProbDisplay.textContent = `Precip Chance: ${precipProb}%`;
 
     const precipTypeDisplay = document.createElement("p");
     precipTypeDisplay.textContent = `Precip Type: ${item.preciptype[0]}`;
@@ -77,7 +89,7 @@ degreeUnits.forEach((item) => {
     const tempMaxDisplays = document.querySelectorAll(".max-temp");
     for(let i = 0; i < tempMaxDisplays.length; i++){
       const tempMaxDisplay = tempMaxDisplays[i];
-      tempMaxDisplay.textContent = `Temp Min: ${convertedMaxTemps[i].toFixed(2)} ${unit}`
+      tempMaxDisplay.textContent = `Temp Max: ${convertedMaxTemps[i].toFixed(2)} ${unit}`
     }
   });
 });
