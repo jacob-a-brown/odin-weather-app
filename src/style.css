@@ -1,0 +1,19 @@
+*, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.weather-content {
+    display: flex;
+}
+
+.daily-content {
+    display: flex;
+    flex-direction: column;
+    padding-right: 5px;
+}
+
+.daily-content p {
+    padding-bottom: 2px;
+}
