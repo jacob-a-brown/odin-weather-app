@@ -12,14 +12,12 @@ form.addEventListener("submit", async (e) => {
   const latitude = document.querySelector("#latitude");
   const longitude = document.querySelector("#longitude");
   const weatherData = await getWeather(latitude.value, longitude.value);
-  console.log(weatherData);
 
   weatherContent.replaceChildren();
   maxTemps = [];
   minTemps = [];
 
   const degreeUnit = document.querySelector(".degree-unit:checked");
-  console.log(degreeUnit.value);
 
   weatherData.days.forEach(function(item){
     const dailyContent = document.createElement("div");
